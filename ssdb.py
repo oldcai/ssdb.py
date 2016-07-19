@@ -164,7 +164,10 @@ class Connection(threading.local):
         chunks = []
 
         while len(chunks) < len(self.commands):
-            buf = self.sock.recv(4096)
+            try:
+                buf = self.sock.recv(4096)
+            except (InterruptedError, KeyboardInterrupt):
+                continue
 
             if not isinstance(buf, bytes) and not len(buf):
                 self.close()
